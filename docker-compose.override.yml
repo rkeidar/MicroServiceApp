@@ -1,0 +1,40 @@
+version: '3.4'
+
+services:
+    userservicedb:
+        container_name: userservicedb
+        restart: always
+        volumes:
+            - ${WEBAPP_STORAGE_HOME}/site:/data/db
+        ports:
+            - "27017:27017"
+        
+    user.api:
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Development
+            - "UserDBSettings:ConnectionString=mongodb://userservicedb:27017"
+        depends_on:
+            - userservicedb
+        volumes:
+            - ${HOME}/.microsoft/usersecrets/:/root/.microsoft/usersecrets
+            - ${HOME}/.aspnet/https:/root/.aspnet/https/
+        ports:
+            - "8000:80"
+
+    alertservicedb:
+        container_name: alertservicedb
+        restart: always
+        ports:
+            - "6379:6379"
+
+    alerts.api:
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Development
+            - "ConnectionStrings:RedisConnection=alertservicedb:6379"
+        depends_on:
+            - alertservicedb
+        volumes:
+            - ${HOME}/.microsoft/usersecrets/:/root/.microsoft/usersecrets
+            - ${HOME}/.aspnet/https:/root/.aspnet/https/
+        ports:
+            - "8001:80"
