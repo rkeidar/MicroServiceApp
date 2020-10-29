@@ -9,7 +9,7 @@
 *.user
 *.userosscache
 *.sln.docstates
-*.pptx\
+*.pptx
 *.txt
 
 # User-specific files (MonoDevelop/Xamarin Studio)
